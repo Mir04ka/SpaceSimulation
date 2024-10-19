@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <list>
+#include <vector>
 
 #include "Object.h"
 #include "MathSingleton.h"
@@ -9,21 +9,17 @@ MathSingleton* MathSingleton::instance = nullptr;
 int main()
 {
     sf::ContextSettings settings;
-    settings.antialiasingLevel = 8;
+    settings.antialiasingLevel = 0;
 
     sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "Space", sf::Style::Fullscreen, settings);
     
     MathSingleton& math = MathSingleton::getInstance();
 
-    std::list<Object*> objects;
-    std::list<Object*>::iterator it;
-    std::list<Object*>::iterator it2;
+    std::vector<Object> objects;
 
-    objects.push_back(new Object(sf::Vector2f(1000, 500), 100, 300000000000, sf::Color::Blue));
-    objects.push_back(new Object(sf::Vector2f(1025, 575), 25, 10000000000, sf::Color::Green));
-    objects.push_back(new Object(sf::Vector2f(1000, 550), 50, 200000000000, sf::Color::Red));
-
-    Object ojb = Object(sf::Vector2f(500, 550), 50, 200000000000, sf::Color::Yellow);
+    objects.push_back(Object(sf::Vector2f(200, 500), 100, 300000000000, sf::Color::Blue));
+    objects.push_back(Object(sf::Vector2f(550, 575), 25, 10000000000, sf::Color::Green));
+    objects.push_back(Object(sf::Vector2f(1000, 550), 50, 200000000000, sf::Color::Red));
 
     sf::Clock deltaClock;
     sf::Time dt = deltaClock.restart();
@@ -39,38 +35,47 @@ int main()
 
         //Force calculation and applying
         
-        for (it = objects.begin(); it != objects.end(); it++)
+        for (int it = 0; it < objects.size(); it++)
         {
             sf::Vector2f totalForce = sf::Vector2f(0.0, 0.0);
 
-            for (it2 = objects.begin(); it2 != objects.end(); it2++)
+            for (int it2 = 0; it2 < objects.size(); it2++)
             {
-                if ((*it) != (*it2)) totalForce += math.getForce((*it)->getPosition(), (*it2)->getPosition(), (*it)->getMass(), (*it2)->getMass());
+                if (it != it2) totalForce += math.getForce(objects[it].getPosition(), objects[it2].getPosition(), objects[it].getMass(), objects[it2].getMass());
             }
 
-            (*it)->update(totalForce, dt.asSeconds());
+            objects[it].update(totalForce, dt.asSeconds());
         }
 
         //Collision
-        /*
-        for (it = objects.begin(); it != objects.end(); it++)
+        
+        for (int it = 0; it < objects.size(); it++)
         {
-            for (it2 = objects.begin(); it2 != objects.end(); it2++)
+            for (int it2 = 0; it2 < objects.size(); it2++)
             {
-                if ((*it) != (*it2) && math.isCollided((*it)->getPosition(), (*it2)->getPosition(), (*it)->getMass(), (*it2)->getMass()))
+                if (it != it2 && math.isCollided(objects[it].getPosition(), objects[it2].getPosition(), objects[it].getRadius(), objects[it2].getRadius()))
                 {
-                    objects.remove((*it));
+                    if (objects[it2].getRadius() > objects[it].getRadius())
+                    {
+                        objects[it2].setRadius(math.getRadius(objects[it].getRadius(), objects[it2].getRadius()));
+                        objects.erase(objects.begin() + it);
+                    }
+                    else
+                    {
+                        objects[it].setRadius(math.getRadius(objects[it].getRadius(), objects[it2].getRadius()));
+                        objects.erase(objects.begin() + it2);
+                    }
                 }
             }
         }
-        */
+        
         //Drawing
 
         window.clear();
 
-        for (it = objects.begin(); it != objects.end(); it++)
+        for (int it = 0; it < objects.size(); it++)
         {
-            window.draw((*it)->getShape());
+            window.draw(objects[it]);
         }
 
         window.display();

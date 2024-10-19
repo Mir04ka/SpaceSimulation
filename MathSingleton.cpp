@@ -21,6 +21,11 @@ sf::Vector2f MathSingleton::getForce(sf::Vector2f pos1, sf::Vector2f pos2, float
     return forceVector * forceScalar;
 }
 
+float MathSingleton::getRadius(float r1, float r2)
+{
+    return (sqrt((pow(r1, 2) + pow(r2, 2))));
+}
+
 float MathSingleton::getDistance(sf::Vector2f pos1, sf::Vector2f pos2)
 {
     return sqrt(pow((pos2.x - pos1.x), 2) + pow((pos2.y - pos1.y), 2));
