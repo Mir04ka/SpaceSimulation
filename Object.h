@@ -19,6 +19,8 @@ private:
 
 public:
 	Object(sf::Vector2f pos, float rad, float mas, sf::Color clr);
+	
+	Object(sf::Vector2f pos, sf::Vector2f vel, float rad, float mas, sf::Color clr);
 
 	virtual ~Object() {};
 
@@ -37,4 +39,12 @@ public:
 	void setRadius(float r);
 
 	float getRadius();
+
+	void setColor(sf::Color cl);
+
+	sf::Color getColor();
+
+	void setVelocity(sf::Vector2f vel);
+
+	sf::Vector2f getVelocity();
 };

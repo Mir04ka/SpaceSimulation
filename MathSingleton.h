@@ -12,6 +12,10 @@ public:
 
     float getRadius(float r1, float r2);
 
+    sf::Vector2f getVelocity(sf::Vector2f vel1, sf::Vector2f vel2, float mas1, float mas2);
+
+    sf::Vector2f getGlobalPos(sf::Vector2f viewCenter, sf::Vector2f viewSize, sf::Vector2f mousePos);
+
     MathSingleton(const MathSingleton&) = delete;
     MathSingleton& operator=(const MathSingleton&) = delete;
 

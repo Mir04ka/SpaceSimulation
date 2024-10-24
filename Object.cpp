@@ -16,6 +16,22 @@ Object::Object(sf::Vector2f pos, float rad, float mas, sf::Color clr)
 	mass = mas;
 }
 
+Object::Object(sf::Vector2f pos, sf::Vector2f vel, float rad, float mas, sf::Color clr)
+{
+	shape.setRadius(rad);
+	shape.setFillColor(clr);
+	shape.setOrigin(rad, rad);
+	shape.setPosition(pos);
+
+	line.setSize(sf::Vector2f(rad, 4));
+	line.setFillColor(sf::Color::White);
+	line.setOrigin(sf::Vector2f(2, 2));
+	line.setPosition(pos);
+
+	mass = mas;
+	velocity = vel;
+}
+
 void Object::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(shape, states);
@@ -69,4 +85,24 @@ void Object::setRadius(float r)
 float Object::getRadius()
 {
 	return shape.getRadius();
+}
+
+void Object::setColor(sf::Color cl)
+{
+	shape.setFillColor(cl);
+}
+
+sf::Color Object::getColor()
+{
+	return shape.getFillColor();
+}
+
+void Object::setVelocity(sf::Vector2f vel)
+{
+	velocity = vel;
+}
+
+sf::Vector2f Object::getVelocity()
+{
+	return velocity;
 }
