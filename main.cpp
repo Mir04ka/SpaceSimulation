@@ -4,40 +4,36 @@
 
 #include "Object.h"
 #include "MathSingleton.h"
+#include "CursorSingleton.h"
 
 #define WHEEL_K 0.5
 #define MIN_SCALE 0.1
 #define CAMERA_SPEED 500
 
-MathSingleton* MathSingleton::instance = nullptr; // Custom math singleton 
+MathSingleton* MathSingleton::instance = nullptr;
+CursorSingleton* CursorSingleton::instance = nullptr;
 
 sf::View view(sf::Vector2f(960.f, 540.f), sf::Vector2f(1920.f, 1080.f)); // Camera creating
 
 int main()
 {
     sf::ContextSettings settings;
-    settings.antialiasingLevel = 0;
+    settings.antialiasingLevel = 8;
 
     sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height), "Space", sf::Style::Fullscreen, settings);
     
     const sf::Vector2f defaultCameraSize = sf::Vector2f(1920.f, 1080.f);
 
     MathSingleton& math = MathSingleton::getInstance();
+    CursorSingleton& cursor = CursorSingleton::getInstance();
 
     std::vector<Object> objects;
-
+    /*
     objects.push_back(Object(sf::Vector2f(200, 00), 100, 3000000000000, sf::Color::Blue));
     objects.push_back(Object(sf::Vector2f(550, 575), 25, 10000000000, sf::Color::Green));
     objects.push_back(Object(sf::Vector2f(1000, 1000), 50, 200000000000, sf::Color::Red));
-    objects.push_back(Object(sf::Vector2f(1500, 300), sf::Vector2f(300, 100), 200, 3000000000000, sf::Color::Yellow));
-
-    sf::CircleShape cursor;
-    bool isCursorVisiable = false;
-    cursor.setRadius(30);
-    cursor.setOrigin(sf::Vector2f(30, 30));
-    cursor.setFillColor(sf::Color::Transparent);
-    cursor.setOutlineColor(sf::Color::White);
-    cursor.setOutlineThickness(2);
+    objects.push_back(Object(sf::Vector2f(1500, 300), sf::Vector2f(00, 00), 200, 3000000000000, sf::Color::Yellow));
+    */
 
     float camaraScale = 1;
     bool wasPressed = false;
@@ -56,20 +52,35 @@ int main()
 
         // Input
         
-        if (event.type == sf::Event::MouseButtonPressed && !wasPressed)
+        cursor.setPosition(math.getGlobalPos(view.getCenter(), view.getSize(), sf::Vector2f(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y)));
+        Object newObject = cursor.update(sf::Mouse::getPosition(), event, dt.asSeconds());
+
+        if (newObject.isReal())
         {
-            objects.push_back(Object(math.getGlobalPos(view.getCenter(), view.getSize(), sf::Vector2f(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y)), 10, 30000000000, sf::Color::Blue));
-            wasPressed = true;
+            newObject.setPosition(math.getGlobalPos(view.getCenter(), view.getSize(), sf::Vector2f(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y)));
+            objects.push_back(newObject);
+        }
+        /*
+        if (event.type == sf::Event::MouseButtonPressed)
+        {
+            if (!wasPressed)
+            {
+                objects.push_back(Object(math.getGlobalPos(view.getCenter(), view.getSize(), sf::Vector2f(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y)), 10, 30000000000, sf::Color::Blue));
+                wasPressed = true;
+            }
         }
         else
         {
             wasPressed = false;
+        }*/
+        /*
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and sf::Mouse::Wheel::HorizontalWheel)
+        {
+            cursor.setOutlineColor(sf::Color::Red);
         }
-
+        */
         if (event.type == sf::Event::MouseWheelScrolled)
         {
-            isCursorVisiable = true;
-
             camaraScale -= event.mouseWheelScroll.delta * WHEEL_K * dt.asSeconds();
 
             if (camaraScale < MIN_SCALE) camaraScale = MIN_SCALE;

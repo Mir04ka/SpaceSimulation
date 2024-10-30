@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CursorSingleton.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathSingleton.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -149,6 +150,7 @@
     <None Include="sfml-window-d-2.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CursorSingleton.h" />
     <ClInclude Include="MathSingleton.h" />
     <ClInclude Include="Object.h" />
   </ItemGroup>

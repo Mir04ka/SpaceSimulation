@@ -1,6 +1,11 @@
 #include "Object.h"
 #include <iostream>
 
+Object::Object()
+{
+	real = false;
+}
+
 Object::Object(sf::Vector2f pos, float rad, float mas, sf::Color clr)
 {
 	shape.setRadius(rad);
@@ -23,6 +28,8 @@ Object::Object(sf::Vector2f pos, sf::Vector2f vel, float rad, float mas, sf::Col
 	shape.setOrigin(rad, rad);
 	shape.setPosition(pos);
 
+	updateDetalisation();
+
 	line.setSize(sf::Vector2f(rad, 4));
 	line.setFillColor(sf::Color::White);
 	line.setOrigin(sf::Vector2f(2, 2));
@@ -30,6 +37,15 @@ Object::Object(sf::Vector2f pos, sf::Vector2f vel, float rad, float mas, sf::Col
 
 	mass = mas;
 	velocity = vel;
+}
+
+void Object::updateDetalisation()
+{
+	int points = (int)(getRadius() / 3);
+	
+	if (points < 32) points = 32;
+
+	shape.setPointCount(points);
 }
 
 void Object::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -80,6 +96,8 @@ void Object::setRadius(float r)
 	shape.setPosition(shape.getPosition() + sf::Vector2f((r - oldRad) / 2, (r - oldRad) / 2));
 	line.setSize(sf::Vector2f(r + 2, 4));
 	line.setPosition(sf::Vector2f((r - oldRad) / 2, (r - oldRad) / 2));
+
+	updateDetalisation();
 }
 
 float Object::getRadius()
@@ -105,4 +123,10 @@ void Object::setVelocity(sf::Vector2f vel)
 sf::Vector2f Object::getVelocity()
 {
 	return velocity;
+}
+
+
+bool Object::isReal()
+{
+	return real;
 }
